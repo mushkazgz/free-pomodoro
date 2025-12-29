@@ -1,0 +1,289 @@
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import { Timer } from './components/Timer';
+import { TimeOptions } from './components/TimeOptions';
+import { ProjectExplorer } from './components/ProjectExplorer';
+import { AboutModal } from './components/AboutModal';
+import { FolderOpen, Sun, Moon, Volume2, VolumeX, Info } from 'lucide-react';
+import { useSound } from './hooks/useSound';
+
+interface Project {
+  id: string;
+  name: string;
+  pomodorosCompleted: number;
+}
+
+export default function App() {
+  const { theme, setTheme } = useTheme();
+  const { isMuted, toggleMute, playSound } = useSound();
+  const [mounted, setMounted] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(25);
+
+  const krishnaQuotes = [
+    "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions.",
+    "Change is the law of the universe. You can be a millionaire or a pauper in an instant.",
+    "The soul is neither born, and does it die.",
+    "Man is made by his belief. As he believes, so he is.",
+    "There is neither this world, nor the world beyond, nor happiness for the one who doubts.",
+    "Delusion arises from anger. The mind is bewildered by delusion.",
+    "Perform your obligatory duty, because action is indeed better than inaction.",
+    "The mind is restless and difficult to restrain, but it is subdued by practice.",
+    "Better indeed is knowledge than mechanical practice. Better than knowledge is meditation.",
+    "A person can rise through the efforts of his own mind; or draw himself down, in the same manner. Because each person is his own friend or enemy."
+  ];
+
+  const getRandomQuote = () => krishnaQuotes[Math.floor(Math.random() * krishnaQuotes.length)];
+  const [currentQuote, setCurrentQuote] = useState(getRandomQuote());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+
+  // Load projects from localStorage or use defaults
+  const loadProjects = (): Project[] => {
+    const saved = localStorage.getItem('pomodoroProjects');
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return [];
+  };
+
+  const [projects, setProjects] = useState<Project[]>(loadProjects());
+  const [currentProject, setCurrentProject] = useState<Project | null>(() => {
+    const savedCurrentId = localStorage.getItem('currentProjectId');
+    const allProjects = loadProjects();
+    if (savedCurrentId) {
+      return allProjects.find(p => p.id === savedCurrentId) || null;
+    }
+    return null;
+  });
+
+  // Save projects to localStorage whenever they change
+  const updateProjects = (newProjects: Project[]) => {
+    setProjects(newProjects);
+    localStorage.setItem('pomodoroProjects', JSON.stringify(newProjects));
+  };
+
+  // Save current project to localStorage
+  const updateCurrentProject = (project: Project | null) => {
+    setCurrentProject(project);
+    if (project) {
+      localStorage.setItem('currentProjectId', project.id);
+    } else {
+      localStorage.removeItem('currentProjectId');
+    }
+  };
+
+  const handleTimeSelect = (minutes: number) => {
+    setSelectedTime(minutes);
+    setIsRunning(false);
+  };
+
+  const handleToggleTimer = () => {
+    setIsRunning(!isRunning);
+  };
+
+  const handleResetTimer = () => {
+    setIsRunning(false);
+  };
+
+  const handleAddProject = (name: string) => {
+    const newProject = {
+      id: Date.now().toString(),
+      name,
+      pomodorosCompleted: 0,
+    };
+    updateProjects([...projects, newProject]);
+  };
+
+  const handleUpdateProject = (id: string, name: string) => {
+    updateProjects(projects.map((p) => (p.id === id ? { ...p, name } : p)));
+    if (currentProject?.id === id) {
+      updateCurrentProject({ ...currentProject, name });
+    }
+  };
+
+  const handleDeleteProject = (id: string) => {
+    updateProjects(projects.filter((p) => p.id !== id));
+    if (currentProject?.id === id) {
+      updateCurrentProject(projects[0] || null);
+    }
+  };
+
+  const handleSelectProject = (project: Project) => {
+    updateCurrentProject(project);
+    setIsExplorerOpen(false);
+  };
+
+  const handlePomodoroComplete = () => {
+    if (currentProject) {
+      const updatedProjects = projects.map((p) =>
+        p.id === currentProject.id
+          ? { ...p, pomodorosCompleted: p.pomodorosCompleted + 1 }
+          : p
+      );
+      updateProjects(updatedProjects);
+      updateCurrentProject({
+        ...currentProject,
+        pomodorosCompleted: currentProject.pomodorosCompleted + 1,
+      });
+    }
+    playSound();
+    setCurrentQuote(getRandomQuote());
+    setIsRunning(false);
+  };
+
+  const handleIncrementPomodoro = (id: string) => {
+    const updatedProjects = projects.map((p) =>
+      p.id === id
+        ? { ...p, pomodorosCompleted: p.pomodorosCompleted + 1 }
+        : p
+    );
+    updateProjects(updatedProjects);
+
+    // Update current project if it's the one being incremented
+    if (currentProject?.id === id) {
+      updateCurrentProject({
+        ...currentProject,
+        pomodorosCompleted: currentProject.pomodorosCompleted + 1,
+      });
+    }
+  };
+
+  return (
+    <div className={`min-h-screen flex items-center justify-center p-8 transition-all duration-700 ${theme === 'dark'
+      ? isRunning
+        ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
+        : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
+      : isRunning
+        ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
+        : 'bg-gradient-to-br from-[#FFF8E7] via-[#F5DEB3] to-[#DEB887]'
+      }`}>
+      <div className="w-full max-w-2xl">
+        {/* Main Card */}
+        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-12 transition-all duration-700 ${theme === 'dark'
+          ? isRunning
+            ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 border border-white/5' // Dark + Running (Deper)
+            : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 border border-white/5' // Dark + Stopped (Relaxed)
+          : isRunning
+            ? 'bg-gradient-to-br from-[#2a2a2a]/95 to-[#1a1a1a]/95' // Light + Running (Focus)
+            : 'bg-gradient-to-br from-[#FFF8E7]/95 to-[#F5E6D3]/95' // Light + Stopped (Cozy)
+          }`}>
+          {/* Header with Project Explorer Button */}
+          <div className="flex justify-between items-center mb-8">
+            <div className="flex items-center">
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className={`p-3 mr-2 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                  ? 'bg-white/10 hover:bg-white/20 text-white'
+                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  }`}
+                title="Toggle Theme"
+              >
+                {mounted && (theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />)}
+              </button>
+              <button
+                onClick={toggleMute}
+                className={`p-3 mr-2 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                  ? 'bg-white/10 hover:bg-white/20 text-white'
+                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  }`}
+                title={isMuted ? "Unmute" : "Mute"}
+              >
+                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={() => setIsAboutOpen(true)}
+                className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                  ? 'bg-white/10 hover:bg-white/20 text-white'
+                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  }`}
+                title="About FreePomodoro"
+              >
+                <Info className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1" />
+
+            <button
+              onClick={() => setIsExplorerOpen(true)}
+              className={`px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center gap-2 ${theme === 'dark'
+                ? 'bg-white/10 hover:bg-white/20 text-white'
+                : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                }`}
+            >
+              <FolderOpen className="w-5 h-5" />
+              Projects
+            </button>
+          </div>
+
+          <div className="flex justify-center mb-8">
+            <Timer
+              duration={selectedTime}
+              isRunning={isRunning}
+              onToggle={handleToggleTimer}
+              onReset={handleResetTimer}
+              onComplete={handlePomodoroComplete}
+            />
+          </div>
+
+          {/* Time Options */}
+          <div className="flex justify-center mb-6">
+            <TimeOptions selectedTime={selectedTime} onSelectTime={handleTimeSelect} isRunning={isRunning} />
+          </div>
+
+          {/* Current Project Name */}
+          {projects.length > 0 && (
+            <div className="text-center">
+              <div className={`inline-block px-6 py-3 rounded-full shadow-md transition-all duration-700 ${theme === 'dark'
+                ? 'bg-white/10 text-gray-300'
+                : isRunning ? 'bg-white/10 text-gray-300' : 'bg-white/60'
+                }`}>
+                <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+                  }`}>Current Project: </span>
+                <span
+                  onClick={() => setIsExplorerOpen(true)}
+                  className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-white' : 'text-[#5D4037]'
+                    }`}
+                >
+                  {currentProject?.name || 'Select a project'}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Cozy Quote */}
+        <div className={`text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+          }`}>
+          <p className="italic">"{currentQuote}"</p>
+        </div>
+      </div>
+
+      {/* Project Explorer Modal */}
+      <ProjectExplorer
+        isOpen={isExplorerOpen}
+        onClose={() => setIsExplorerOpen(false)}
+        projects={projects}
+        currentProject={currentProject}
+        onSelectProject={handleSelectProject}
+        onAddProject={handleAddProject}
+        onUpdateProject={handleUpdateProject}
+        onDeleteProject={handleDeleteProject}
+        onIncrementPomodoro={handleIncrementPomodoro}
+        onImportProjects={updateProjects}
+      />
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+        isDark={theme === 'dark'}
+      />
+    </div>
+  );
+}
