@@ -48,13 +48,13 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete }: Ti
   const progress = ((duration * 60 - timeLeft) / (duration * 60)) * 100;
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-8 landscape:gap-3">
       {/* Circular Timer Display */}
       <div className={`relative rounded-full transition-shadow duration-700 ${isRunning
         ? theme === 'dark' ? 'animate-timer-aura-dark' : 'animate-timer-aura-light'
         : ''
         }`}>
-        <svg className="w-64 h-64 md:w-72 md:h-72 -rotate-90" viewBox="0 0 288 288">
+        <svg className="w-[60vmin] h-[60vmin] landscape:w-[45vmin] landscape:h-[45vmin] md:w-72 md:h-72 -rotate-90" viewBox="0 0 288 288">
           <circle
             cx="144"
             cy="144"
@@ -79,7 +79,7 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete }: Ti
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className={`text-5xl md:text-7xl font-light transition-colors duration-700 ${isRunning ? 'text-white' : 'text-[#5D4037]'
+            <div className={`text-[12vmin] landscape:text-[10vmin] md:text-7xl font-light transition-colors duration-700 ${isRunning ? 'text-white' : 'text-[#5D4037]'
               }`}>
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </div>

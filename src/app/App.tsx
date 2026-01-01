@@ -154,7 +154,7 @@ export default function App() {
   };
 
   return (
-    <div className={`h-screen overflow-hidden flex flex-col items-center justify-center p-4 transition-all duration-700 ${theme === 'dark'
+    <div className={`h-screen overflow-hidden flex flex-col items-center justify-center p-0 md:p-4 transition-all duration-700 ${theme === 'dark'
       ? isRunning
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
@@ -162,18 +162,18 @@ export default function App() {
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#FFF8E7] via-[#F5DEB3] to-[#DEB887]'
       }`}>
-      <div className="w-full max-w-lg md:max-w-2xl landscape:max-w-5xl flex flex-col h-full max-h-[95vh] justify-center">
+      <div className="w-full max-w-lg md:max-w-2xl landscape:max-w-5xl flex flex-col h-full md:max-h-[95vh] justify-center">
         {/* Main Card */}
-        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-12 transition-all duration-700 flex flex-col justify-between ${theme === 'dark'
+        <div className={`backdrop-blur-sm rounded-none md:rounded-3xl shadow-none md:shadow-2xl p-6 md:p-12 landscape:p-2 transition-all duration-700 flex flex-col justify-between h-full md:h-auto ${theme === 'dark'
           ? isRunning
-            ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 border border-white/5' // Dark + Running (Deper)
-            : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 border border-white/5' // Dark + Stopped (Relaxed)
+            ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 md:border border-white/5' // Dark + Running (Deper)
+            : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 md:border border-white/5' // Dark + Stopped (Relaxed)
           : isRunning
             ? 'bg-gradient-to-br from-[#2a2a2a]/95 to-[#1a1a1a]/95' // Light + Running (Focus)
             : 'bg-gradient-to-br from-[#FFF8E7]/95 to-[#F5E6D3]/95' // Light + Stopped (Cozy)
           }`}>
           {/* Header with Project Explorer Button */}
-          <div className="flex justify-between items-center mb-4 md:mb-8 shrink-0">
+          <div className="flex justify-between items-center mb-4 md:mb-8 landscape:mb-1 shrink-0">
             <div className="flex items-center gap-2 md:gap-3">
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -233,7 +233,7 @@ export default function App() {
               />
             </div>
 
-            <div className="flex flex-col gap-6 shrink-0 landscape:w-1/3 items-center">
+            <div className="flex flex-col gap-6 landscape:gap-2 shrink-0 landscape:w-1/3 items-center">
               {/* Time Options */}
               <div className="flex justify-center w-full">
                 <TimeOptions selectedTime={selectedTime} onSelectTime={handleTimeSelect} isRunning={isRunning} />
