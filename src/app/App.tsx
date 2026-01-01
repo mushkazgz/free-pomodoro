@@ -154,7 +154,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 transition-all duration-700 ${theme === 'dark'
+    <div className={`h-screen overflow-hidden flex flex-col items-center justify-center p-4 transition-all duration-700 ${theme === 'dark'
       ? isRunning
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
@@ -162,9 +162,9 @@ export default function App() {
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#FFF8E7] via-[#F5DEB3] to-[#DEB887]'
       }`}>
-      <div className="w-full max-w-lg md:max-w-2xl">
+      <div className="w-full max-w-lg md:max-w-2xl landscape:max-w-5xl flex flex-col h-full max-h-[95vh] justify-center">
         {/* Main Card */}
-        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-12 transition-all duration-700 ${theme === 'dark'
+        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-12 transition-all duration-700 flex flex-col justify-between ${theme === 'dark'
           ? isRunning
             ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 border border-white/5' // Dark + Running (Deper)
             : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 border border-white/5' // Dark + Stopped (Relaxed)
@@ -173,7 +173,7 @@ export default function App() {
             : 'bg-gradient-to-br from-[#FFF8E7]/95 to-[#F5E6D3]/95' // Light + Stopped (Cozy)
           }`}>
           {/* Header with Project Explorer Button */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-4 md:mb-8 shrink-0">
             <div className="flex items-center gap-2 md:gap-3">
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -222,44 +222,48 @@ export default function App() {
             </button>
           </div>
 
-          <div className="flex justify-center mb-8">
-            <Timer
-              duration={selectedTime}
-              isRunning={isRunning}
-              onToggle={handleToggleTimer}
-              onReset={handleResetTimer}
-              onComplete={handlePomodoroComplete}
-            />
-          </div>
-
-          {/* Time Options */}
-          <div className="flex justify-center mb-6">
-            <TimeOptions selectedTime={selectedTime} onSelectTime={handleTimeSelect} isRunning={isRunning} />
-          </div>
-
-          {/* Current Project Name */}
-          {projects.length > 0 && (
-            <div className="text-center">
-              <div className={`inline-block px-6 py-3 rounded-full shadow-md transition-all duration-700 ${theme === 'dark'
-                ? 'bg-white/10 text-gray-300'
-                : isRunning ? 'bg-white/10 text-gray-300' : 'bg-white/60'
-                }`}>
-                <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
-                  }`}>Current Project: </span>
-                <span
-                  onClick={() => setIsExplorerOpen(true)}
-                  className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-white' : 'text-[#5D4037]'
-                    }`}
-                >
-                  {currentProject?.name || 'Select a project'}
-                </span>
-              </div>
+          <div className="flex flex-col landscape:flex-row landscape:items-center landscape:justify-evenly w-full flex-1 min-h-0">
+            <div className="flex justify-center mb-8 landscape:mb-0 flex-1">
+              <Timer
+                duration={selectedTime}
+                isRunning={isRunning}
+                onToggle={handleToggleTimer}
+                onReset={handleResetTimer}
+                onComplete={handlePomodoroComplete}
+              />
             </div>
-          )}
+
+            <div className="flex flex-col gap-6 shrink-0 landscape:w-1/3 items-center">
+              {/* Time Options */}
+              <div className="flex justify-center w-full">
+                <TimeOptions selectedTime={selectedTime} onSelectTime={handleTimeSelect} isRunning={isRunning} />
+              </div>
+
+              {/* Current Project Name */}
+              {projects.length > 0 && (
+                <div className="text-center w-full">
+                  <div className={`inline-block px-6 py-3 rounded-full shadow-md transition-all duration-700 ${theme === 'dark'
+                    ? 'bg-white/10 text-gray-300'
+                    : isRunning ? 'bg-white/10 text-gray-300' : 'bg-white/60'
+                    }`}>
+                    <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+                      }`}>Current Project: </span>
+                    <span
+                      onClick={() => setIsExplorerOpen(true)}
+                      className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-white' : 'text-[#5D4037]'
+                        }`}
+                    >
+                      {currentProject?.name || 'Select a project'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Cozy Quote - Hidden on mobile to prevent scroll */}
-        <div className={`hidden md:block text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+        <div className={`hidden md:block text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto shrink-0 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
           }`}>
           <p className="italic">"{currentQuote}"</p>
         </div>
