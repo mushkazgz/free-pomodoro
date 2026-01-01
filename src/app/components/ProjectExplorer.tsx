@@ -127,7 +127,14 @@ export function ProjectExplorer({
                 }`}
             >
               {editingId === project.id ? (
-                <div className="flex items-center gap-2">
+                <div
+                  className="flex items-center gap-2"
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setEditingId(null);
+                    }
+                  }}
+                >
                   <input
                     type="text"
                     value={editingName}
@@ -148,12 +155,6 @@ export function ProjectExplorer({
                     className="w-8 h-8 rounded-lg bg-green-500 hover:bg-green-600 text-white flex items-center justify-center transition-colors"
                   >
                     <Check className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => onDeleteProject(project.id)}
-                    className="w-8 h-8 rounded-lg bg-red-500 hover:bg-red-600 text-white flex items-center justify-center transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
@@ -198,8 +199,26 @@ export function ProjectExplorer({
                           ? "bg-white/10 hover:bg-white/20 text-white"
                           : "bg-[#F5E6D3] hover:bg-[#E8D4BD]"
                         } flex items-center justify-center transition-colors`}
+                      title="Edit project"
                     >
                       <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm("Are you sure you want to delete this project?")) {
+                          onDeleteProject(project.id);
+                        }
+                      }}
+                      className={`w-8 h-8 rounded-lg ${currentProject?.id === project.id
+                        ? "bg-white/20 hover:bg-white/30"
+                        : theme === 'dark'
+                          ? "bg-red-500/20 hover:bg-red-500/30 text-red-200"
+                          : "bg-red-100 hover:bg-red-200 text-red-600"
+                        } flex items-center justify-center transition-colors`}
+                      title="Delete project"
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

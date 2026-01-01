@@ -182,25 +182,53 @@
 
 @layer utilities {
   @keyframes breathing-bg {
-    0%, 100% { filter: brightness(1); }
-    50% { filter: brightness(1.1); }
+
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+
+    50% {
+      filter: brightness(1.1);
+    }
   }
 
   @keyframes timer-aura {
-    0%, 100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.1); }
-    50% { box-shadow: 0 0 60px rgba(96, 165, 250, 0.4); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(96, 165, 250, 0.1);
+    }
+
+    50% {
+      box-shadow: 0 0 60px rgba(96, 165, 250, 0.4);
+    }
   }
 
   /* Dark mode specific aura - Blue Glow */
   @keyframes timer-aura-dark {
-    0%, 100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.1); }
-    50% { box-shadow: 0 0 60px rgba(96, 165, 250, 0.4); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(96, 165, 250, 0.1);
+    }
+
+    50% {
+      box-shadow: 0 0 60px rgba(96, 165, 250, 0.4);
+    }
   }
 
   /* Light mode specific aura - Blue Glow */
   @keyframes timer-aura-light {
-    0%, 100% { box-shadow: 0 0 15px rgba(96, 165, 250, 0.1); }
-    50% { box-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(96, 165, 250, 0.1);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(96, 165, 250, 0.3);
+    }
   }
 
   .animate-breathing-bg {
@@ -210,9 +238,60 @@
   .animate-timer-aura-dark {
     animation: timer-aura-dark 4s ease-in-out infinite;
   }
-  
+
   .animate-timer-aura-light {
     animation: timer-aura-light 4s ease-in-out infinite;
   }
-}
 
+  /* Alarm Pulse - Strong latent light */
+  @keyframes alarm-pulse {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      filter: brightness(1);
+    }
+
+    50% {
+      box-shadow: 0 0 100px rgba(255, 255, 255, 0.8);
+      filter: brightness(1.3);
+    }
+  }
+
+  .animate-alarm-pulse {
+    animation: alarm-pulse 2s ease-in-out infinite;
+  }
+
+  /* Green Aura for Breaks */
+  @keyframes timer-aura-green-dark {
+
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.1);
+    }
+
+    50% {
+      box-shadow: 0 0 60px rgba(74, 222, 128, 0.4);
+    }
+  }
+
+  @keyframes timer-aura-green-light {
+
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.1);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(74, 222, 128, 0.3);
+    }
+  }
+
+  .animate-timer-aura-green-dark {
+    animation: timer-aura-green-dark 4s ease-in-out infinite;
+  }
+
+  .animate-timer-aura-green-light {
+    animation: timer-aura-green-light 4s ease-in-out infinite;
+  }
+}

@@ -77,17 +77,42 @@ export default function App() {
     }
   };
 
+  const [mode, setMode] = useState<'pomodoro' | 'shortBreak' | 'longBreak'>('pomodoro');
+  const [pomodorosCompletedSession, setPomodorosCompletedSession] = useState(0);
+  const [isAlarmActive, setIsAlarmActive] = useState(false);
+
+  useEffect(() => {
+    // Update timer when mode changes
+    if (mode === 'pomodoro') setSelectedTime(25);
+    else if (mode === 'shortBreak') setSelectedTime(5);
+    else if (mode === 'longBreak') setSelectedTime(15);
+  }, [mode]);
+
   const handleTimeSelect = (minutes: number) => {
     setSelectedTime(minutes);
     setIsRunning(false);
+    setIsAlarmActive(false);
+    // If user manually selects time, we might want to reset mode or keep current?
+    // For simplicity, let's keep current mode but if they pick 25, 5, 15 we could auto-switch.
+    // Let's assume manual override stays in current mode for now, or maybe force pomodoro if > 15?
+    // Actually, let's switch mode based on time for better UX
+    if (minutes === 25) setMode('pomodoro');
+    else if (minutes === 5) setMode('shortBreak');
+    else if (minutes === 15) setMode('longBreak');
   };
 
   const handleToggleTimer = () => {
+    if (isAlarmActive) {
+      setIsAlarmActive(false);
+      setIsRunning(true); // Start the break/next timer immediately
+      return;
+    }
     setIsRunning(!isRunning);
   };
 
   const handleResetTimer = () => {
     setIsRunning(false);
+    setIsAlarmActive(false);
   };
 
   const handleAddProject = (name: string) => {
@@ -119,21 +144,40 @@ export default function App() {
   };
 
   const handlePomodoroComplete = () => {
-    if (currentProject) {
-      const updatedProjects = projects.map((p) =>
-        p.id === currentProject.id
-          ? { ...p, pomodorosCompleted: p.pomodorosCompleted + 1 }
-          : p
-      );
-      updateProjects(updatedProjects);
-      updateCurrentProject({
-        ...currentProject,
-        pomodorosCompleted: currentProject.pomodorosCompleted + 1,
-      });
-    }
-    playSound();
-    setCurrentQuote(getRandomQuote());
+    playSound(); // Bell sound
     setIsRunning(false);
+    setIsAlarmActive(true);
+    setCurrentQuote(getRandomQuote());
+
+    if (mode === 'pomodoro') {
+      // Completed a pomodoro
+      const newCompleted = pomodorosCompletedSession + 1;
+      setPomodorosCompletedSession(newCompleted);
+
+      // Update project stats
+      if (currentProject) {
+        const updatedProjects = projects.map((p) =>
+          p.id === currentProject.id
+            ? { ...p, pomodorosCompleted: p.pomodorosCompleted + 1 }
+            : p
+        );
+        updateProjects(updatedProjects);
+        updateCurrentProject({
+          ...currentProject,
+          pomodorosCompleted: currentProject.pomodorosCompleted + 1,
+        });
+      }
+
+      // Determine next break
+      if (newCompleted % 4 === 0) {
+        setMode('longBreak');
+      } else {
+        setMode('shortBreak');
+      }
+    } else {
+      // Completed a break, go back to pomodoro
+      setMode('pomodoro');
+    }
   };
 
   const handleIncrementPomodoro = (id: string) => {
@@ -230,6 +274,8 @@ export default function App() {
                 onToggle={handleToggleTimer}
                 onReset={handleResetTimer}
                 onComplete={handlePomodoroComplete}
+                mode={mode}
+                isAlarmActive={isAlarmActive}
               />
             </div>
 
