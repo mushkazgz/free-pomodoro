@@ -154,7 +154,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-8 transition-all duration-700 ${theme === 'dark'
+    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 transition-all duration-700 ${theme === 'dark'
       ? isRunning
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
@@ -162,9 +162,9 @@ export default function App() {
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#FFF8E7] via-[#F5DEB3] to-[#DEB887]'
       }`}>
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-lg md:max-w-2xl">
         {/* Main Card */}
-        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-12 transition-all duration-700 ${theme === 'dark'
+        <div className={`backdrop-blur-sm rounded-3xl shadow-2xl p-6 md:p-12 transition-all duration-700 ${theme === 'dark'
           ? isRunning
             ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 border border-white/5' // Dark + Running (Deper)
             : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 border border-white/5' // Dark + Stopped (Relaxed)
@@ -174,10 +174,10 @@ export default function App() {
           }`}>
           {/* Header with Project Explorer Button */}
           <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2 md:gap-3">
               <button
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className={`p-3 mr-2 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
@@ -187,7 +187,7 @@ export default function App() {
               </button>
               <button
                 onClick={toggleMute}
-                className={`p-3 mr-2 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
@@ -211,13 +211,14 @@ export default function App() {
 
             <button
               onClick={() => setIsExplorerOpen(true)}
-              className={`px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center gap-2 ${theme === 'dark'
+              className={`p-3 md:px-6 md:py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center gap-2 ${theme === 'dark'
                 ? 'bg-white/10 hover:bg-white/20 text-white'
                 : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                 }`}
+              title="Projects"
             >
               <FolderOpen className="w-5 h-5" />
-              Projects
+              <span className="hidden md:inline">Projects</span>
             </button>
           </div>
 
@@ -257,8 +258,8 @@ export default function App() {
           )}
         </div>
 
-        {/* Cozy Quote */}
-        <div className={`text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+        {/* Cozy Quote - Hidden on mobile to prevent scroll */}
+        <div className={`hidden md:block text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
           }`}>
           <p className="italic">"{currentQuote}"</p>
         </div>
