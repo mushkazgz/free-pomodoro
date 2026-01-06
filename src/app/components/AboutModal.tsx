@@ -10,12 +10,16 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+        >
             <div
                 className={`relative w-full max-w-lg p-8 rounded-3xl shadow-2xl transform transition-all duration-300 scale-100 ${isDark
-                        ? 'bg-[#1a1a1a] text-gray-100 border border-white/10'
-                        : 'bg-[#FFF8E7] text-[#5D4037] border border-[#DEB887]/20'
+                    ? 'bg-[#1a1a1a] text-gray-100 border border-white/10'
+                    : 'bg-[#FFF8E7] text-[#5D4037] border border-[#DEB887]/20'
                     }`}
+                onClick={(e) => e.stopPropagation()}
             >
                 <button
                     onClick={onClose}
@@ -61,8 +65,8 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold shadow-lg transform hover:scale-105 transition-all duration-300 ${isDark
-                                ? 'bg-[#60A5FA] hover:bg-[#3B82F6] text-white'
-                                : 'bg-[#FFD700] hover:bg-[#FDB931] text-[#5D4037]'
+                            ? 'bg-[#60A5FA] hover:bg-[#3B82F6] text-white'
+                            : 'bg-[#FFD700] hover:bg-[#FDB931] text-[#5D4037]'
                             }`}
                     >
                         <Heart className="w-5 h-5 fill-current" />

@@ -15,6 +15,8 @@ export const useSound = () => {
         setIsMuted((prev: boolean) => !prev);
     };
 
+    const [alarmInterval, setAlarmInterval] = useState<NodeJS.Timeout | null>(null);
+
     const playSound = useCallback(() => {
         if (isMuted) return;
 
@@ -55,5 +57,40 @@ export const useSound = () => {
         }
     }, [isMuted]);
 
-    return { isMuted, toggleMute, playSound };
+    const startAlarm = useCallback(() => {
+        // Play immediately
+        playSound();
+        if ("vibrate" in navigator) {
+            navigator.vibrate([500, 200, 500]); // Vibrate pattern
+        }
+
+        // Loop every 3 seconds
+        const interval = setInterval(() => {
+            playSound();
+            if ("vibrate" in navigator) {
+                navigator.vibrate([500, 200, 500]);
+            }
+        }, 3000);
+
+        setAlarmInterval(interval);
+    }, [playSound]);
+
+    const stopAlarm = useCallback(() => {
+        if (alarmInterval) {
+            clearInterval(alarmInterval);
+            setAlarmInterval(null);
+        }
+        if ("vibrate" in navigator) {
+            navigator.vibrate(0); // Stop vibration
+        }
+    }, [alarmInterval]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if (alarmInterval) clearInterval(alarmInterval);
+        };
+    }, [alarmInterval]);
+
+    return { isMuted, toggleMute, playSound, startAlarm, stopAlarm };
 };

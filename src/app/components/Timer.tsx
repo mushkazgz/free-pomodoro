@@ -59,13 +59,13 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
     <div className="flex flex-col items-center gap-8 landscape:gap-3">
       {/* Circular Timer Display */}
       <div className={`relative rounded-full transition-shadow duration-700 ${isAlarmActive ? 'animate-alarm-pulse' :
-          isRunning
-            ? isBreak
-              ? theme === 'dark' ? 'animate-timer-aura-green-dark' : 'animate-timer-aura-green-light'
-              : theme === 'dark' ? 'animate-timer-aura-dark' : 'animate-timer-aura-light'
-            : ''
+        isRunning
+          ? isBreak
+            ? theme === 'dark' ? 'animate-timer-aura-green-dark' : 'animate-timer-aura-green-light'
+            : theme === 'dark' ? 'animate-timer-aura-dark' : 'animate-timer-aura-light'
+          : ''
         }`}>
-        <svg className="w-[60vmin] h-[60vmin] landscape:w-[45vmin] landscape:h-[45vmin] md:w-72 md:h-72 -rotate-90" viewBox="0 0 288 288">
+        <svg className="w-[60vmin] h-[60vmin] landscape:w-[35vmin] landscape:h-[35vmin] md:w-72 md:h-72 -rotate-90" viewBox="0 0 288 288">
           <circle
             cx="144"
             cy="144"
@@ -100,28 +100,24 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
 
       {/* Control Buttons */}
       <div className="flex gap-4">
-        <button
-          onClick={onToggle}
-          className={`w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-700 flex items-center justify-center ${isAlarmActive
-              ? 'bg-white animate-pulse text-black'
-              : isRunning
-                ? isBreak
-                  ? 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-white'
-                  : 'bg-gradient-to-br from-[#60A5FA] to-[#3B82F6] hover:from-[#93C5FD] hover:to-[#60A5FA] text-white'
-                : 'bg-gradient-to-br from-[#D2691E] to-[#A0522D] hover:from-[#CD5C5C] hover:to-[#8B4513] text-white'
-            }`}
-        >
-          {isRunning ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-        </button>
-        <button
-          onClick={handleReset}
-          className={`w-16 h-16 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center justify-center ${isRunning
-            ? 'bg-white/10 hover:bg-white/20 text-white'
-            : 'bg-[#F5E6D3] hover:bg-[#E8D4BD] text-[#5D4037]'
-            }`}
-        >
-          <RotateCcw className="w-6 h-6" />
-        </button>
+        {!isRunning ? (
+          <button
+            onClick={onToggle}
+            className={`w-16 h-16 landscape:w-14 landscape:h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-700 flex items-center justify-center ${isBreak
+                ? 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-white'
+                : 'bg-gradient-to-br from-[#60A5FA] to-[#3B82F6] hover:from-[#93C5FD] hover:to-[#60A5FA] text-white'
+              }`}
+          >
+            <Play className="w-6 h-6 landscape:w-5 landscape:h-5 ml-1" />
+          </button>
+        ) : (
+          <button
+            onClick={handleReset}
+            className={`w-16 h-16 landscape:w-14 landscape:h-14 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white`}
+          >
+            <RotateCcw className="w-6 h-6 landscape:w-5 landscape:h-5" />
+          </button>
+        )}
       </div>
     </div>
   );

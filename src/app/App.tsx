@@ -4,7 +4,7 @@ import { Timer } from './components/Timer';
 import { TimeOptions } from './components/TimeOptions';
 import { ProjectExplorer } from './components/ProjectExplorer';
 import { AboutModal } from './components/AboutModal';
-import { FolderOpen, Sun, Moon, Volume2, VolumeX, Info } from 'lucide-react';
+import { FolderOpen, Sun, Moon, Volume2, VolumeX, Info, Zap } from 'lucide-react';
 import { useSound } from './hooks/useSound';
 
 interface Project {
@@ -15,9 +15,10 @@ interface Project {
 
 export default function App() {
   const { theme, setTheme } = useTheme();
-  const { isMuted, toggleMute, playSound } = useSound();
+  const { isMuted, toggleMute, playSound, startAlarm, stopAlarm } = useSound();
   const [mounted, setMounted] = useState(false);
   const [selectedTime, setSelectedTime] = useState(25);
+  const [baseDuration, setBaseDuration] = useState(25);
 
   const krishnaQuotes = [
     "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions.",
@@ -83,26 +84,34 @@ export default function App() {
 
   useEffect(() => {
     // Update timer when mode changes
-    if (mode === 'pomodoro') setSelectedTime(25);
-    else if (mode === 'shortBreak') setSelectedTime(5);
-    else if (mode === 'longBreak') setSelectedTime(15);
-  }, [mode]);
+    if (mode === 'pomodoro') setSelectedTime(baseDuration);
+    else if (mode === 'shortBreak') {
+      if (baseDuration === 25) setSelectedTime(5);
+      else if (baseDuration === 50) setSelectedTime(10);
+      else if (baseDuration === 90) setSelectedTime(20);
+      else setSelectedTime(5); // Fallback
+    }
+    else if (mode === 'longBreak') {
+      if (baseDuration === 25) setSelectedTime(15);
+      else if (baseDuration === 50) setSelectedTime(25);
+      else if (baseDuration === 90) setSelectedTime(30);
+      else setSelectedTime(15); // Fallback
+    }
+  }, [mode, baseDuration]);
 
   const handleTimeSelect = (minutes: number) => {
+    stopAlarm();
+    setBaseDuration(minutes);
     setSelectedTime(minutes);
+    setMode('pomodoro');
     setIsRunning(false);
     setIsAlarmActive(false);
-    // If user manually selects time, we might want to reset mode or keep current?
-    // For simplicity, let's keep current mode but if they pick 25, 5, 15 we could auto-switch.
-    // Let's assume manual override stays in current mode for now, or maybe force pomodoro if > 15?
-    // Actually, let's switch mode based on time for better UX
-    if (minutes === 25) setMode('pomodoro');
-    else if (minutes === 5) setMode('shortBreak');
-    else if (minutes === 15) setMode('longBreak');
+    setPomodorosCompletedSession(0); // Reset session count on time change? Probably good idea.
   };
 
   const handleToggleTimer = () => {
     if (isAlarmActive) {
+      stopAlarm();
       setIsAlarmActive(false);
       setIsRunning(true); // Start the break/next timer immediately
       return;
@@ -111,6 +120,7 @@ export default function App() {
   };
 
   const handleResetTimer = () => {
+    stopAlarm();
     setIsRunning(false);
     setIsAlarmActive(false);
   };
@@ -144,7 +154,7 @@ export default function App() {
   };
 
   const handlePomodoroComplete = () => {
-    playSound(); // Bell sound
+    startAlarm(); // Persistent alarm
     setIsRunning(false);
     setIsAlarmActive(true);
     setCurrentQuote(getRandomQuote());
@@ -220,7 +230,10 @@ export default function App() {
           <div className="flex justify-between items-center mb-4 md:mb-8 landscape:mb-1 shrink-0">
             <div className="flex items-center gap-2 md:gap-3">
               <button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                onClick={() => {
+                  stopAlarm();
+                  setTheme(theme === 'dark' ? 'light' : 'dark');
+                }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
@@ -230,7 +243,10 @@ export default function App() {
                 {mounted && (theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />)}
               </button>
               <button
-                onClick={toggleMute}
+                onClick={() => {
+                  stopAlarm();
+                  toggleMute();
+                }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
@@ -240,7 +256,10 @@ export default function App() {
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
               </button>
               <button
-                onClick={() => setIsAboutOpen(true)}
+                onClick={() => {
+                  stopAlarm();
+                  setIsAboutOpen(true);
+                }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
@@ -249,12 +268,35 @@ export default function App() {
               >
                 <Info className="w-5 h-5" />
               </button>
+              <button
+                onClick={() => {
+                  stopAlarm();
+                  setSelectedTime(0.05); // 3 seconds
+                  setIsRunning(false); // Let user press play, or start immediately? User said "starts a timer", usually implies setting it. 
+                  // But to test "what happens when it ends", maybe auto-start is better? 
+                  // "start a timer of 3 seconds".
+                  setIsAlarmActive(false);
+                  // Let's set it and maybe auto-start? 
+                  // "inicie un timer" -> start a timer.
+                  setTimeout(() => setIsRunning(true), 100);
+                }}
+                className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                  ? 'bg-white/10 hover:bg-white/20 text-white'
+                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  }`}
+                title="Test 3s Timer"
+              >
+                <Zap className="w-5 h-5" />
+              </button>
             </div>
 
             <div className="flex-1" />
 
             <button
-              onClick={() => setIsExplorerOpen(true)}
+              onClick={() => {
+                stopAlarm();
+                setIsExplorerOpen(true);
+              }}
               className={`p-3 md:px-6 md:py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center gap-2 ${theme === 'dark'
                 ? 'bg-white/10 hover:bg-white/20 text-white'
                 : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
@@ -295,7 +337,10 @@ export default function App() {
                     <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
                       }`}>Current Project: </span>
                     <span
-                      onClick={() => setIsExplorerOpen(true)}
+                      onClick={() => {
+                        stopAlarm();
+                        setIsExplorerOpen(true);
+                      }}
                       className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-white' : 'text-[#5D4037]'
                         }`}
                     >

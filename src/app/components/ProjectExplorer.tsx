@@ -93,11 +93,17 @@ export function ProjectExplorer({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className={`rounded-3xl shadow-2xl w-full max-w-md p-8 relative transition-colors duration-300 ${theme === 'dark'
-        ? 'bg-[#1a1a1a] border border-white/10'
-        : 'bg-gradient-to-br from-[#FFF8E7] to-[#F5E6D3]'
-        }`}>
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className={`rounded-3xl shadow-2xl w-full max-w-md p-8 relative transition-colors duration-300 ${theme === 'dark'
+          ? 'bg-[#1a1a1a] border border-white/10'
+          : 'bg-gradient-to-br from-[#FFF8E7] to-[#F5E6D3]'
+          }`}
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -174,20 +180,7 @@ export function ProjectExplorer({
                     <span>{project.name}</span>
                   </button>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        onIncrementPomodoro(project.id)
-                      }
-                      className={`w-8 h-8 rounded-lg ${currentProject?.id === project.id
-                        ? "bg-white/20 hover:bg-white/30"
-                        : theme === 'dark'
-                          ? "bg-white/10 hover:bg-white/20 text-white"
-                          : "bg-[#F5E6D3] hover:bg-[#E8D4BD]"
-                        } flex items-center justify-center transition-colors`}
-                      title="Add pomodoro"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
+
                     <button
                       onClick={() => {
                         setEditingId(project.id);
