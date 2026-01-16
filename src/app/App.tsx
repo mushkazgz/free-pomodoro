@@ -4,8 +4,9 @@ import { Timer } from './components/Timer';
 import { TimeOptions } from './components/TimeOptions';
 import { ProjectExplorer } from './components/ProjectExplorer';
 import { AboutModal } from './components/AboutModal';
-import { FolderOpen, Sun, Moon, Volume2, VolumeX, Info, Zap } from 'lucide-react';
+import { FolderOpen, Sun, Moon, Volume2, VolumeX, Info, Zap, Waves } from 'lucide-react';
 import { useSound } from './hooks/useSound';
+import { useWhiteNoise } from './hooks/useWhiteNoise';
 
 interface Project {
   id: string;
@@ -16,6 +17,7 @@ interface Project {
 export default function App() {
   const { theme, setTheme } = useTheme();
   const { isMuted, toggleMute, playSound, startAlarm, stopAlarm } = useSound();
+  const { isPlaying: isNoisePlaying, toggleNoise } = useWhiteNoise();
   const [mounted, setMounted] = useState(false);
   const [selectedTime, setSelectedTime] = useState(25);
   const [baseDuration, setBaseDuration] = useState(25);
@@ -246,6 +248,9 @@ export default function App() {
                 onClick={() => {
                   stopAlarm();
                   toggleMute();
+                  if (isNoisePlaying) {
+                    toggleNoise();
+                  }
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
@@ -254,6 +259,20 @@ export default function App() {
                 title={isMuted ? "Unmute" : "Mute"}
               >
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </button>
+              <button
+                onClick={() => {
+                  toggleNoise();
+                }}
+                className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
+                  ? isNoisePlaying ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-white/10 hover:bg-white/20 text-white'
+                  : isRunning
+                    ? isNoisePlaying ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-white/10 hover:bg-white/20 text-white'
+                    : isNoisePlaying ? 'bg-amber-500/20 text-amber-600 hover:bg-amber-500/30' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  }`}
+                title={isNoisePlaying ? "Stop Noise" : "Play Brown Noise"}
+              >
+                <Waves className="w-5 h-5" />
               </button>
               <button
                 onClick={() => {
@@ -268,16 +287,12 @@ export default function App() {
               >
                 <Info className="w-5 h-5" />
               </button>
-              <button
+              {/* <button
                 onClick={() => {
                   stopAlarm();
                   setSelectedTime(0.05); // 3 seconds
-                  setIsRunning(false); // Let user press play, or start immediately? User said "starts a timer", usually implies setting it. 
-                  // But to test "what happens when it ends", maybe auto-start is better? 
-                  // "start a timer of 3 seconds".
+                  setIsRunning(false);
                   setIsAlarmActive(false);
-                  // Let's set it and maybe auto-start? 
-                  // "inicie un timer" -> start a timer.
                   setTimeout(() => setIsRunning(true), 100);
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
@@ -287,7 +302,7 @@ export default function App() {
                 title="Test 3s Timer"
               >
                 <Zap className="w-5 h-5" />
-              </button>
+              </button> */}
             </div>
 
             <div className="flex-1" />
