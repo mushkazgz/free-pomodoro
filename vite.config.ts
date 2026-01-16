@@ -17,25 +17,21 @@ export default defineConfig({
         name: 'Free Pomodoro',
         short_name: 'Pomodoro',
         description: 'A beautiful and free Pomodoro timer for your productivity.',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#1a1a1a',
+        background_color: '#1a1a1a',
         display: 'standalone',
         icons: [
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'any'
           }
         ]
       },
