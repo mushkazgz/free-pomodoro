@@ -1,5 +1,5 @@
 import { useTheme } from "next-themes";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 
 interface TimerProps {
@@ -20,24 +20,39 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
     setTimeLeft(duration * 60);
   }, [duration]);
 
+  const endTimeRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (!isRunning) return;
+    if (!isRunning) {
+      endTimeRef.current = null;
+      return;
+    }
+
+    if (endTimeRef.current === null) {
+      endTimeRef.current = Date.now() + timeLeft * 1000;
+    }
 
     const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
+      const now = Date.now();
+      if (endTimeRef.current) {
+        const remaining = Math.max(0, Math.ceil((endTimeRef.current - now) / 1000));
+
+        if (remaining <= 0) {
           clearInterval(interval);
+          endTimeRef.current = null;
           if (onComplete) {
             onComplete();
           }
-          return duration * 60;
+          setTimeLeft(duration * 60);
+          return;
         }
-        return prev - 1;
-      });
-    }, 1000);
+
+        setTimeLeft(remaining);
+      }
+    }, 200);
 
     return () => clearInterval(interval);
-  }, [isRunning, onComplete]);
+  }, [isRunning, onComplete, duration]);
 
   const handleReset = () => {
     setTimeLeft(duration * 60);
@@ -104,8 +119,8 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
           <button
             onClick={onToggle}
             className={`w-16 h-16 landscape:w-14 landscape:h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-700 flex items-center justify-center ${isBreak
-                ? 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-white'
-                : 'bg-gradient-to-br from-[#60A5FA] to-[#3B82F6] hover:from-[#93C5FD] hover:to-[#60A5FA] text-white'
+              ? 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-white'
+              : 'bg-gradient-to-br from-[#60A5FA] to-[#3B82F6] hover:from-[#93C5FD] hover:to-[#60A5FA] text-white'
               }`}
           >
             <Play className="w-6 h-6 landscape:w-5 landscape:h-5 ml-1" />

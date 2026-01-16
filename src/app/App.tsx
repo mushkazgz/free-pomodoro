@@ -309,7 +309,7 @@ export default function App() {
           </div>
 
           <div className="flex flex-col landscape:flex-row landscape:items-center landscape:justify-evenly w-full flex-1 min-h-0">
-            <div className="flex justify-center mb-8 landscape:mb-0 flex-1">
+            <div className="flex justify-center items-center mb-8 landscape:mb-0 flex-1">
               <Timer
                 duration={selectedTime}
                 isRunning={isRunning}
