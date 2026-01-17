@@ -19,7 +19,7 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
             onClick={onClose}
         >
             <div
-                className={`relative w-full max-w-lg p-8 rounded-3xl shadow-2xl transform transition-all duration-300 scale-100 ${isDark
+                className={`relative w-full max-w-lg p-8 rounded-3xl shadow-2xl transform transition-all duration-300 scale-100 max-h-[85vh] overflow-y-auto ${isDark
                     ? 'bg-[#1a1a1a] text-gray-100 border border-white/10'
                     : 'bg-[#FFF8E7] text-[#5D4037] border border-[#DEB887]/20'
                     }`}
