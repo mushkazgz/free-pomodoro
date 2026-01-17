@@ -1,4 +1,4 @@
-import { X, Heart, BookOpen } from 'lucide-react';
+import { X, Heart, BookOpen, Sliders } from 'lucide-react';
 import { useState } from 'react';
 import { PomodoroTechniqueModal } from './PomodoroTechniqueModal';
 
@@ -73,6 +73,24 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
                         >
                             Read more about the technique &rarr;
                         </button>
+                    </div>
+
+                    <div className={`p-4 rounded-xl ${isDark ? 'bg-white/5' : 'bg-white/40'}`}>
+                        <h3 className="font-semibold mb-1 flex items-center gap-2">
+                            <Sliders className="w-5 h-5 text-purple-500" />
+                            Related Free Apps
+                        </h3>
+                        <p className="text-sm opacity-80 mb-3">
+                            Check out <strong>FreeNoiseGenerator</strong>: A total control noise frequency generator.
+                        </p>
+                        <a
+                            href="https://freenoisegenerator.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm font-semibold hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}
+                        >
+                            Visit freenoisegenerator.com &rarr;
+                        </a>
                     </div>
                 </div>
 
