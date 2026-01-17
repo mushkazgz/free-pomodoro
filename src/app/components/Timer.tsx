@@ -85,7 +85,7 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
             cx="144"
             cy="144"
             r="136"
-            stroke={isRunning ? "rgba(255, 255, 255, 0.1)" : "rgba(139, 69, 19, 0.1)"}
+            stroke={isRunning ? (theme === 'dark' ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)") : "rgba(139, 69, 19, 0.1)"}
             strokeWidth="8"
             fill="none"
             className="transition-all duration-700"
@@ -105,7 +105,9 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <div className={`text-[12vmin] landscape:text-[10vmin] md:text-7xl font-light transition-colors duration-700 ${isRunning || isAlarmActive ? 'text-white' : 'text-[#5D4037]'
+            <div className={`text-[12vmin] landscape:text-[10vmin] md:text-7xl font-light transition-colors duration-700 ${isRunning || isAlarmActive
+              ? (theme === 'dark' ? 'text-white' : 'text-[#5D4037]')
+              : 'text-[#5D4037]'
               }`}>
               {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
             </div>
@@ -128,7 +130,7 @@ export function Timer({ duration, isRunning, onToggle, onReset, onComplete, mode
         ) : (
           <button
             onClick={handleReset}
-            className={`w-16 h-16 landscape:w-14 landscape:h-14 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white`}
+            className={`w-16 h-16 landscape:w-14 landscape:h-14 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center justify-center ${theme === 'dark' ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]'}`}
           >
             <RotateCcw className="w-6 h-6 landscape:w-5 landscape:h-5" />
           </button>

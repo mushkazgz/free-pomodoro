@@ -1,3 +1,5 @@
+import { useTheme } from 'next-themes';
+
 interface TimeOptionsProps {
   selectedTime: number;
   onSelectTime: (minutes: number) => void;
@@ -5,6 +7,7 @@ interface TimeOptionsProps {
 }
 
 export function TimeOptions({ selectedTime, onSelectTime, isRunning }: TimeOptionsProps) {
+  const { theme } = useTheme();
   const times = [25, 50, 90];
 
   return (
@@ -18,7 +21,9 @@ export function TimeOptions({ selectedTime, onSelectTime, isRunning }: TimeOptio
               ? 'bg-gradient-to-br from-[#60A5FA] to-[#3B82F6] text-white shadow-lg scale-105'
               : 'bg-gradient-to-br from-[#D2691E] to-[#A0522D] text-white shadow-lg scale-105'
             : isRunning
-              ? 'bg-white/10 text-gray-300 hover:bg-white/20 shadow-md hover:shadow-lg'
+              ? (theme === 'dark'
+                ? 'bg-white/10 text-gray-300 hover:bg-white/20 shadow-md hover:shadow-lg' // Dark mode running
+                : 'bg-[#5D4037]/10 text-[#5D4037] hover:bg-[#5D4037]/20 shadow-md hover:shadow-lg') // Light mode running
               : 'bg-[#F5E6D3] text-[#5D4037] hover:bg-[#E8D4BD] shadow-md hover:shadow-lg'
             }`}
         >

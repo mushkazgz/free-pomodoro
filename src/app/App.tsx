@@ -102,6 +102,11 @@ export default function App() {
   }, [mode, baseDuration]);
 
   const handleTimeSelect = (minutes: number) => {
+    // Prevent pausing/resetting if clicking the same running timer
+    if (isRunning && baseDuration === minutes && mode === 'pomodoro') {
+      return;
+    }
+
     stopAlarm();
     setBaseDuration(minutes);
     setSelectedTime(minutes);
@@ -215,7 +220,7 @@ export default function App() {
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
       : isRunning
-        ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
+        ? 'bg-gradient-to-br from-[#D2B48C] via-[#C19A6B] to-[#A0522D] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#FFF8E7] via-[#F5DEB3] to-[#DEB887]'
       }`}>
       <div className="w-full max-w-lg md:max-w-2xl landscape:max-w-5xl flex flex-col h-full md:max-h-[95vh] justify-center">
@@ -225,7 +230,7 @@ export default function App() {
             ? 'bg-gradient-to-br from-[#1F1F1F]/95 to-[#121212]/95 md:border border-white/5' // Dark + Running (Deper)
             : 'bg-gradient-to-br from-[#2D2D2D]/95 to-[#242424]/95 md:border border-white/5' // Dark + Stopped (Relaxed)
           : isRunning
-            ? 'bg-gradient-to-br from-[#2a2a2a]/95 to-[#1a1a1a]/95' // Light + Running (Focus)
+            ? 'bg-white/40 md:border border-[#5D4037]/5' // Light + Running (Focus - Warm)
             : 'bg-gradient-to-br from-[#FFF8E7]/95 to-[#F5E6D3]/95' // Light + Stopped (Cozy)
           }`}>
           {/* Header with Project Explorer Button */}
@@ -238,7 +243,7 @@ export default function App() {
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
-                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  : isRunning ? 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
                 title="Toggle Theme"
               >
@@ -254,7 +259,7 @@ export default function App() {
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
-                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  : isRunning ? 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
                 title={isMuted ? "Unmute" : "Mute"}
               >
@@ -267,7 +272,7 @@ export default function App() {
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? isNoisePlaying ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-white/10 hover:bg-white/20 text-white'
                   : isRunning
-                    ? isNoisePlaying ? 'bg-amber-500/20 text-amber-500 hover:bg-amber-500/30' : 'bg-white/10 hover:bg-white/20 text-white'
+                    ? isNoisePlaying ? 'bg-amber-700/20 text-amber-800 hover:bg-amber-700/30' : 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]'
                     : isNoisePlaying ? 'bg-amber-500/20 text-amber-600 hover:bg-amber-500/30' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
                 title={isNoisePlaying ? "Stop Noise" : "Play Brown Noise"}
@@ -281,7 +286,7 @@ export default function App() {
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
-                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  : isRunning ? 'bg-black/5 hover:bg-black/10 text-slate-700' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
                 title="About FreePomodoro"
               >
@@ -297,7 +302,7 @@ export default function App() {
                 }}
                 className={`p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 ${theme === 'dark'
                   ? 'bg-white/10 hover:bg-white/20 text-white'
-                  : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                  : isRunning ? 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                   }`}
                 title="Test 3s Timer"
               >
@@ -314,7 +319,7 @@ export default function App() {
               }}
               className={`p-3 md:px-6 md:py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-700 flex items-center gap-2 ${theme === 'dark'
                 ? 'bg-white/10 hover:bg-white/20 text-white'
-                : isRunning ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
+                : isRunning ? 'bg-[#5D4037]/10 hover:bg-[#5D4037]/20 text-[#5D4037]' : 'bg-white/60 hover:bg-white/80 text-[#5D4037]'
                 }`}
               title="Projects"
             >
@@ -347,16 +352,16 @@ export default function App() {
                 <div className="text-center w-full">
                   <div className={`inline-block px-6 py-3 rounded-full shadow-md transition-all duration-700 ${theme === 'dark'
                     ? 'bg-white/10 text-gray-300'
-                    : isRunning ? 'bg-white/10 text-gray-300' : 'bg-white/60'
+                    : isRunning ? 'bg-[#5D4037]/10 text-[#5D4037]' : 'bg-white/60'
                     }`}>
-                    <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+                    <span className={`transition-colors duration-700 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-[#5D4037]/70' : 'text-[#8D6E63]'
                       }`}>Current Project: </span>
                     <span
                       onClick={() => {
                         stopAlarm();
                         setIsExplorerOpen(true);
                       }}
-                      className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-white' : 'text-[#5D4037]'
+                      className={`transition-colors duration-700 cursor-pointer hover:opacity-70 ${theme === 'dark' ? 'text-white' : isRunning ? 'text-[#5D4037]' : 'text-[#5D4037]'
                         }`}
                     >
                       {currentProject?.name || 'Select a project'}
@@ -369,7 +374,7 @@ export default function App() {
         </div>
 
         {/* Cozy Quote - Hidden on mobile to prevent scroll */}
-        <div className={`hidden md:block text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto shrink-0 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-gray-400' : 'text-[#8D6E63]'
+        <div className={`hidden md:block text-center mt-6 opacity-70 transition-colors duration-700 max-w-lg mx-auto shrink-0 ${theme === 'dark' ? 'text-gray-400' : isRunning ? 'text-[#5D4037]' : 'text-[#8D6E63]'
           }`}>
           <p className="italic">"{currentQuote}"</p>
         </div>
