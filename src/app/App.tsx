@@ -215,7 +215,7 @@ export default function App() {
   };
 
   return (
-    <div className={`h-screen overflow-hidden flex flex-col items-center justify-center p-0 md:p-4 transition-all duration-700 ${theme === 'dark'
+    <div className={`h-[100dvh] overflow-hidden flex flex-col items-center justify-center p-0 md:p-4 transition-all duration-700 ${theme === 'dark'
       ? isRunning
         ? 'bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#1f1f1f] animate-breathing-bg'
         : 'bg-gradient-to-br from-[#2C2C2C] via-[#3D3D3D] to-[#2C2C2C]'
