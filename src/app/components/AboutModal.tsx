@@ -1,4 +1,6 @@
-import { X, Heart } from 'lucide-react';
+import { X, Heart, BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import { PomodoroTechniqueModal } from './PomodoroTechniqueModal';
 
 interface AboutModalProps {
     isOpen: boolean;
@@ -7,6 +9,8 @@ interface AboutModalProps {
 }
 
 export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
+    const [isTechniqueOpen, setIsTechniqueOpen] = useState(false);
+
     if (!isOpen) return null;
 
     return (
@@ -30,7 +34,7 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
                 </button>
 
                 <div className="text-center mb-6">
-                    <h2 className="text-3xl font-bold mb-2">FreePomodoro</h2>
+                    <h2 className="text-4xl mb-2" style={{ fontFamily: '"Patrick Hand", cursive' }}>freepomodoro</h2>
                     <p className={`text-sm opacity-70 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
                         Simple. Private. Free.
                     </p>
@@ -53,6 +57,22 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
                         <p className="text-sm opacity-80">
                             This tool is completely free to use. No hidden fees, no subscriptions. Just pure focus.
                         </p>
+                    </div>
+
+                    <div className={`p-4 rounded-xl ${isDark ? 'bg-white/5' : 'bg-white/40'}`}>
+                        <h3 className="font-semibold mb-1 flex items-center gap-2">
+                            <BookOpen className="w-5 h-5 text-green-500" />
+                            Why Pomodoro?
+                        </h3>
+                        <p className="text-sm opacity-80 mb-3">
+                            Learn more about the Pomodoro productivity technique.
+                        </p>
+                        <button
+                            onClick={() => setIsTechniqueOpen(true)}
+                            className={`text-sm font-semibold hover:underline ${isDark ? 'text-blue-400' : 'text-blue-600'}`}
+                        >
+                            Read more about the technique &rarr;
+                        </button>
                     </div>
                 </div>
 
@@ -79,6 +99,11 @@ export function AboutModal({ isOpen, onClose, isDark }: AboutModalProps) {
                 </div>
 
             </div>
+            <PomodoroTechniqueModal
+                isOpen={isTechniqueOpen}
+                onClose={() => setIsTechniqueOpen(false)}
+                isDark={isDark}
+            />
         </div>
     );
 }
